@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+   consul:
+        image: hashicorp/consul:latest
+        command: consul agent -dev -log-level=warn -ui -client=0.0.0.0
+        hostname: consul
+        container_name: consul
+        networks:
+            - common_network
+
+   userservice1.openapi:
+        container_name: userservice1.openapi
+        image: userservice.openapi:latest
+        restart: on-failure
+        hostname: userservice1.openapi
+        build:
+            context: .
+            dockerfile: src/services/userservice.OpenApi/Dockerfile
+        networks:
+            - common_network
+        environment:
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+
+   userservice2.openapi:
+        container_name: userservice2.openapi
+        image: userservice.openapi:latest
+        restart: on-failure
+        hostname: userservice2.openapi
+        build:
+            context: .
+            dockerfile: src/services/userservice.OpenApi/Dockerfile
+        networks:
+            - common_network
+        environment:
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+
+   userservice3.openapi:
+        container_name: userservice3.openapi
+        image: userservice.openapi:latest
+        restart: on-failure
+        hostname: userservice3.openapi
+        build:
+            context: .
+            dockerfile: src/services/userservice.OpenApi/Dockerfile
+        networks:
+            - common_network
+        environment:
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+
+   services.gateway:
+        container_name: services.gateway
+        image: services.gateway:latest
+        restart: on-failure
+        hostname: services.gateway
+        build:
+            context: .
+            dockerfile: src/gateway/Services.Gateway/Dockerfile
+        networks:
+            - common_network
+        environment:
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+
+   jaeger:
+      image: jaegertracing/all-in-one:latest
+      container_name: services.Jaeger
+      ports:
+         - 4317:4317
+         - 4318:4318
+         - 16686:16686
+      networks:
+         - common_network
+
+networks:
+    common_network:
+        driver: bridge

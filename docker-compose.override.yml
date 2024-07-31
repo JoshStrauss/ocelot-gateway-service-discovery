@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+    consul:
+        ports:
+             - "8500:8500"
+
+    userservice1.openapi:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ServiceConfig__Id=userservice.openapi-9100
+          - ServiceConfig__Name=userservice
+          - ServiceConfig__DiscoveryAddress=http://consul:8500
+          - ServiceConfig__Address=userservice1.openapi
+          - ServiceConfig__Port=8080
+          - ServiceConfig__HealthCheckEndPoint=health
+        ports:
+            - 9100:8080
+        depends_on:
+            - consul
+
+    userservice2.openapi:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ServiceConfig__Id=userservice.openapi-9200
+          - ServiceConfig__Name=userservice
+          - ServiceConfig__DiscoveryAddress=http://consul:8500
+          - ServiceConfig__Address=userservice2.openapi
+          - ServiceConfig__Port=8080
+          - ServiceConfig__HealthCheckEndPoint=health
+        ports:
+            - 9200:8080
+        depends_on:
+            - consul
+
+    userservice3.openapi:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ServiceConfig__Id=userservice.openapi-9300
+          - ServiceConfig__Name=userservice
+          - ServiceConfig__DiscoveryAddress=http://consul:8500
+          - ServiceConfig__Address=userservice3.openapi
+          - ServiceConfig__Port=8080
+          - ServiceConfig__HealthCheckEndPoint=health
+        ports:
+            - 9300:8080
+        depends_on:
+            - consul
+
+    services.gateway:
+        environment:
+            - ServiceConfig__Address=services.gateway
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:8080
+        ports:
+            - 9500:8080
+        depends_on:
+            - consul
+            - userservice1.openapi
+            - userservice2.openapi
+            - userservice3.openapi
