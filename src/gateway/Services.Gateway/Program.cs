@@ -4,6 +4,7 @@ using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
 using Services.Core;
+using Services.Gateway;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddSwaggerGen();
 // Add Ocelot and related services
 builder.Services
     .AddOcelot()
-    .AddConsul()
+    .AddConsul<ConsulServiceBuilder>()
     .AddCacheManager(x =>
     {
         x.WithDictionaryHandle();

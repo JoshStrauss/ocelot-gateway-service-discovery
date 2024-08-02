@@ -1,22 +1,22 @@
 {
 	"Routes": [
-		{
-			"Servicename": "userservice",
-			"DownstreamPathTemplate": "/{url}",
-			"DownstreamScheme": "http",
-			"UpstreamPathTemplate": "/{url}",
-			"UpstreamHttpMethod": [ "GET" ],
-			"UseServiceDiscovery": true,
-			"RouteIsCaseSensitive": false,
-			"LoadBalancerOptions": {
-				"Type": "RoundRobin"
-			},
-			"QoSOptions": {
-				"ExceptionsAllowedBeforeBreaking": 3,
-				"DurationOfBreak": 5000,
-				"TimeoutValue": 2000
-			}
-		}
+    {
+      "ServiceName": "userservice",
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/{url}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "UseServiceDiscovery": true,
+      "RouteIsCaseSensitive": false,
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5000,
+        "TimeoutValue": 2000
+      }
+    }
 	],
 	"GlobalConfiguration": {
 		"RequestIdKey": "OcRequestId",
