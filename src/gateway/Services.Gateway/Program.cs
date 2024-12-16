@@ -3,7 +3,7 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
-using Services.Core;
+using Services.AspNetCore;
 using Services.Gateway;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

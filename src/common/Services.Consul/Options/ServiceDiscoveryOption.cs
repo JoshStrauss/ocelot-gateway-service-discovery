@@ -2,7 +2,7 @@
 
 public class ServiceDiscoveryOption
 {
-    public static string Key => "ServiceDiscovery";
+    public static string Section => "ServiceDiscovery";
 
     public string Id { get; set; }
 

@@ -12,7 +12,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/gateway/Services.Gateway/Services.Gateway.csproj", "src/gateway/Services.Gateway/"]
-COPY ["src/common/Services.Core/Services.Core.csproj", "src/common/Services.Core/"]
+COPY ["src/common/Services.AspNetCore/Services.AspNetCore.csproj", "src/common/Services.AspNetCore/"]
+COPY ["src/common/Services.Consul/Services.Consul.csproj", "src/common/Services.Consul/"]
 RUN dotnet restore "./src/gateway/Services.Gateway/Services.Gateway.csproj"
 COPY . .
 WORKDIR "/src/src/gateway/Services.Gateway"

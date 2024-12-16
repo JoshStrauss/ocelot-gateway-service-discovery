@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\Services.Core\Services.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\common\Services.AspNetCore\Services.AspNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

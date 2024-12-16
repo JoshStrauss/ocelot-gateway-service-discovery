@@ -1,23 +1,23 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Microsoft.Extensions.Configuration;
 using Services.Consul;
 using Services.Consul.Options;
 
-namespace Services.Core
+namespace Services.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
         public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
         {
-            builder.Services.Configure<ServiceDiscoveryOption>(builder.Configuration.GetSection(nameof(ServiceDiscoveryOption)));
+            builder.Services.Configure<ServiceDiscoveryOption>(builder.Configuration.GetSection(ServiceDiscoveryOption.Section));
 
             var serviceConfig = builder.Configuration
-                .GetSection(nameof(ServiceDiscoveryOption))
+                .GetSection(ServiceDiscoveryOption.Section)
                 .Get<ServiceDiscoveryOption>();
 
             string serviceName = serviceConfig?.Address;

@@ -11,7 +11,7 @@ namespace Services.Consul
 		public static void AddConsul(this IServiceCollection services, IConfiguration configuration)
 		{
             var serviceDiscoveryOption = configuration
-                .GetSection(ServiceDiscoveryOption.Key)
+                .GetSection(ServiceDiscoveryOption.Section)
                 .Get<ServiceDiscoveryOption>();
 
             services.AddConsul(serviceDiscoveryOption);
