@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Services.AspNetCore;
 using Services.Consul.Options;
@@ -61,9 +62,10 @@ app.MapGet("/status", (ILogger<Program> logger, IHttpContextAccessor contextAcce
 app.MapGet("/Config", (ILogger<Program> logger, IHttpContextAccessor contextAccessor, IOptions<ServiceDiscoveryOption> serviceDiscoveryOption) =>
 {
     var context = contextAccessor.HttpContext;
-    var msg = $"Getting Config on {context!.Request.Host}";
+    var msg = $"Getting service discover config on {context!.Request.Host}";
 
-    logger.LogInformation(msg, serviceDiscoveryOption.Value);
+    logger.LogInformation(msg);
+    logger.LogInformation(serviceDiscoveryOption.Value.ToString());
 
     return Results.Json(serviceDiscoveryOption.Value);
 });
