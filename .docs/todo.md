@@ -1,0 +1,6 @@
+- [ ] Create benefits vs not having load balancing
+- [ ] Licensing
+- [ ] Production, VM steps for VM, 
+- [ ] Make service registry configurable on or off
+- [ ] Check persistance on options
+- [ ] Windows Service 

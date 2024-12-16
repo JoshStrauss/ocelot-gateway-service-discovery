@@ -26,6 +26,7 @@ builder.Configuration
     .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    //.AddOcelot(builder.Environment, MergeOcelotJson.ToFile, reloadOnChange: true)
     .AddJsonFile("ocelot.json", optional: false, reloadOnChange: false)
     .AddEnvironmentVariables();
 

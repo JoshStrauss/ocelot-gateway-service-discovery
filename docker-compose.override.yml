@@ -6,12 +6,12 @@ services:
     userservice1.openapi:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
-          - ServiceConfig__Id=userservice.openapi-9100
-          - ServiceConfig__Name=userservice
-          - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=userservice1.openapi
-          - ServiceConfig__Port=8080
-          - ServiceConfig__HealthCheckEndPoint=health
+          - ServiceDiscovery__Id=userservice.openapi-9100
+          - ServiceDiscovery__Name=userservice
+          - ServiceDiscovery__ConsulUri=http://consul:8500
+          - ServiceDiscovery__Address=userservice1.openapi
+          - ServiceDiscovery__Port=8080
+          - ServiceDiscovery__HealthCheckEndPoint__Uri="http://userservice1.openapi:8080/health"
         ports:
             - 9100:8080
         depends_on:
@@ -20,12 +20,12 @@ services:
     userservice2.openapi:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
-          - ServiceConfig__Id=userservice.openapi-9200
-          - ServiceConfig__Name=userservice
-          - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=userservice2.openapi
-          - ServiceConfig__Port=8080
-          - ServiceConfig__HealthCheckEndPoint=health
+          - ServiceDiscovery__Id=userservice.openapi-9200
+          - ServiceDiscovery__Name=userservice
+          - ServiceDiscovery__ConsulUri=http://consul:8500
+          - ServiceDiscovery__Address=userservice2.openapi
+          - ServiceDiscovery__Port=8080
+          - ServiceDiscovery__HealthCheckEndPoint__Uri=http://userservice1.openapi:8080/health
         ports:
             - 9200:8080
         depends_on:
@@ -34,12 +34,12 @@ services:
     userservice3.openapi:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
-          - ServiceConfig__Id=userservice.openapi-9300
-          - ServiceConfig__Name=userservice
-          - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=userservice3.openapi
-          - ServiceConfig__Port=8080
-          - ServiceConfig__HealthCheckEndPoint=health
+          - ServiceDiscovery__Id=userservice.openapi-9300
+          - ServiceDiscovery__Name=userservice
+          - ServiceDiscovery__ConsulUri=http://consul:8500
+          - ServiceDiscovery__Address=userservice3.openapi
+          - ServiceDiscovery__Port=8080
+          - ServiceDiscovery__HealthCheckEndPoint__Uri=http://userservice1.openapi:8080/health
         ports:
             - 9300:8080
         depends_on:
@@ -47,7 +47,7 @@ services:
 
     services.gateway:
         environment:
-            - ServiceConfig__Address=services.gateway
+            - ServiceDiscovery__Address=services.gateway
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_URLS=http://+:8080
         ports:

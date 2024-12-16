@@ -1,42 +1,42 @@
 ﻿using Consul;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
+using Microsoft.Extensions.Options;
+using Services.Consul.Options;
 
-namespace Services.Core.ServiceDiscovery
+namespace Services.Consul
 {
 	public class ServiceDiscoveryHostedService : IHostedService
 	{
 		private readonly IConsulClient _client;
-		private readonly ServiceConfig _config;
+		private readonly ServiceDiscoveryOption _config;
 		private AgentServiceRegistration _registration;
 
-		public ServiceDiscoveryHostedService(IConsulClient client, ServiceConfig config)
+		public ServiceDiscoveryHostedService(IConsulClient client, IOptions<ServiceDiscoveryOption> config)
 		{
 			_client = client;
-			_config = config;
+			_config = config.Value;
 		}
 
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-            if (_config.DiscoveryAddress == null )
+            if (_config.ConsulUri == null)
                 return;
 
             Console.WriteLine(_config.Name);
+
 			_registration = new AgentServiceRegistration
 			{
 				ID = _config.Id,
 				Name = _config.Name,
 				Address = _config.Address,
 				Port = _config.Port,
-				Check = new AgentServiceCheck()
-				{
-					DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
-					Interval = TimeSpan.FromSeconds(15),
-					HTTP = $"http://{_config.Address}:{_config.Port}/{_config.HealthCheckEndPoint}",
-					Timeout = TimeSpan.FromSeconds(5)
-				}
+                Check = new AgentServiceCheck
+                {
+					DeregisterCriticalServiceAfter = _config.HealthCheckEndPoint.DeregisterCriticalServiceAfter != null ? TimeSpan.FromMilliseconds(_config.HealthCheckEndPoint.DeregisterCriticalServiceAfter.Value) : null,
+                    Interval = TimeSpan.FromSeconds(_config.HealthCheckEndPoint.Internal ?? 10),
+                    Timeout = TimeSpan.FromSeconds(_config.HealthCheckEndPoint.Timeout ?? 10),
+                    HTTP = _config.HealthCheckEndPoint.Uri.ToString()
+                }
 			};
 
 			await _client.Agent.ServiceDeregister(_registration.ID, cancellationToken).ConfigureAwait(false);

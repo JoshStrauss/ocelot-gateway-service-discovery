@@ -4,15 +4,23 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Services.Core.ServiceDiscovery;
+using Microsoft.Extensions.Configuration;
+using Services.Consul;
+using Services.Consul.Options;
 
 namespace Services.Core
 {
-    public static class Extensions
+    public static class ServiceCollectionExtensions
     {
         public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
         {
-            string serviceName = builder.Configuration.GetServiceConfig().Address;
+            builder.Services.Configure<ServiceDiscoveryOption>(builder.Configuration.GetSection(nameof(ServiceDiscoveryOption)));
+
+            var serviceConfig = builder.Configuration
+                .GetSection(nameof(ServiceDiscoveryOption))
+                .Get<ServiceDiscoveryOption>();
+
+            string serviceName = serviceConfig?.Address;
 
             builder.ConfigureOpenTelemetry(serviceName);
             builder.AddDefaultHealthChecks();
@@ -20,7 +28,7 @@ namespace Services.Core
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
+            builder.Services.AddConsul(builder.Configuration);
 
             builder.AddLogging();
 

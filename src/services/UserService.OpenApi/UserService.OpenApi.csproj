@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\Services.Core\Services.Core.csproj" />
+    <ProjectReference Include="..\..\common\Services.Core\Services.AspNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
