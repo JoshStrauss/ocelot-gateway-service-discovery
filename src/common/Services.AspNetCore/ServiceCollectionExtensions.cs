@@ -35,7 +35,6 @@ namespace Services.AspNetCore
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddConsul(builder.Configuration);
 
-
             return builder;
         }
 
@@ -43,10 +42,12 @@ namespace Services.AspNetCore
         {
             builder.Logging.ClearProviders(); // Remove default providers to avoid conflicts
             builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
             builder.Logging.AddConsole(options =>
             {
                 options.FormatterName = ConsoleFormatterNames.Json;
             });
+
             builder.Logging.AddDebug();
             builder.Logging.AddEventSourceLogger();
 
