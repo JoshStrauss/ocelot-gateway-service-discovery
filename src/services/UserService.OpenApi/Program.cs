@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Services.AspNetCore;
 using Services.Consul.Options;
+using static System.Text.Json.JsonSerializer;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -65,7 +65,7 @@ app.MapGet("/Config", (ILogger<Program> logger, IHttpContextAccessor contextAcce
     var msg = $"Getting service discover config on {context!.Request.Host}";
 
     logger.LogInformation(msg);
-    logger.LogInformation(serviceDiscoveryOption.Value.ToString());
+    logger.LogInformation(Serialize(serviceDiscoveryOption.Value));
 
     return Results.Json(serviceDiscoveryOption.Value);
 });

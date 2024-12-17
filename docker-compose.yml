@@ -1,74 +1,79 @@
 services:
-   consul:
-        image: hashicorp/consul:latest
-        command: consul agent -dev -log-level=warn -ui -client=0.0.0.0
-        hostname: consul
-        container_name: consul
-        networks:
-            - common_network
+  consul:
+    image: hashicorp/consul:latest
+    command: consul agent -dev -log-level=warn -ui -client=0.0.0.0
+    hostname: consul
+    container_name: consul
+    networks:
+      - common_network
 
-   userservice1.openapi:
-        container_name: userservice1.openapi
-        image: userservice.openapi:latest
-        restart: on-failure
-        hostname: userservice1.openapi
-        build:
-            context: .
-            dockerfile: src/services/userservice.OpenApi/Dockerfile
-        networks:
-            - common_network
-        environment:
-          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  userservice1.openapi:
+    container_name: userservice1.openapi
+    image: userservice.openapi:latest
+    restart: on-failure
+    hostname: userservice1.openapi
+    build:
+      context: .
+      dockerfile: src/services/userservice.OpenApi/Dockerfile
+    networks:
+      - common_network
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
 
-   userservice2.openapi:
-        container_name: userservice2.openapi
-        image: userservice.openapi:latest
-        restart: on-failure
-        hostname: userservice2.openapi
-        build:
-            context: .
-            dockerfile: src/services/userservice.OpenApi/Dockerfile
-        networks:
-            - common_network
-        environment:
-          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  userservice2.openapi:
+    container_name: userservice2.openapi
+    image: userservice.openapi:latest
+    restart: on-failure
+    hostname: userservice2.openapi
+    build:
+      context: .
+      dockerfile: src/services/userservice.OpenApi/Dockerfile
+    networks:
+      - common_network
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
 
-   userservice3.openapi:
-        container_name: userservice3.openapi
-        image: userservice.openapi:latest
-        restart: on-failure
-        hostname: userservice3.openapi
-        build:
-            context: .
-            dockerfile: src/services/userservice.OpenApi/Dockerfile
-        networks:
-            - common_network
-        environment:
-          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  userservice3.openapi:
+    container_name: userservice3.openapi
+    image: userservice.openapi:latest
+    restart: on-failure
+    hostname: userservice3.openapi
+    build:
+      context: .
+      dockerfile: src/services/userservice.OpenApi/Dockerfile
+    networks:
+      - common_network
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
 
-   services.gateway:
-        container_name: services.gateway
-        image: services.gateway:latest
-        restart: on-failure
-        hostname: services.gateway
-        build:
-            context: .
-            dockerfile: src/gateway/Services.Gateway/Dockerfile
-        networks:
-            - common_network
-        environment:
-          OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger:4317"
+  services.gateway:
+    container_name: services.gateway
+    image: services.gateway:latest
+    restart: on-failure
+    hostname: services.gateway
+    build:
+      context: .
+      dockerfile: src/gateway/Services.Gateway/Dockerfile
+    networks:
+      - common_network
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
 
-   jaeger:
-      image: jaegertracing/all-in-one:latest
-      container_name: services.Jaeger
-      ports:
-         - 4317:4317
-         - 4318:4318
-         - 16686:16686
-      networks:
-         - common_network
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+    container_name: aspire-dashboard
+    networks:
+      - common_network
+    ports:
+      - 18888:18888 # Dashboard UI port
+      - 4317:18889 # OTLP gRPC endpoint
+      - 4318:4318 # OTLP HTTP endpoint
+    environment:
+      - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
+      - ALLOW_UNSECURED_TRANSPORT=true
+      - DOTNET_ENVIRONMENT=Development
+      - Dashboard:ApplicationName=ServiceDescoveryTest
 
 networks:
-    common_network:
-        driver: bridge
+  common_network:
+    driver: bridge

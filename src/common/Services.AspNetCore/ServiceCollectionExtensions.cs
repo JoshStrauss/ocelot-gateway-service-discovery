@@ -3,6 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Services.Consul;
@@ -22,6 +26,7 @@ namespace Services.AspNetCore
 
             string serviceName = serviceConfig?.Address;
 
+            builder.AddLogging();
             builder.ConfigureOpenTelemetry(serviceName);
             builder.AddDefaultHealthChecks();
 
@@ -30,16 +35,18 @@ namespace Services.AspNetCore
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddConsul(builder.Configuration);
 
-            builder.AddLogging();
 
             return builder;
         }
 
         private static IHostApplicationBuilder AddLogging(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddLogging();
+            builder.Logging.ClearProviders(); // Remove default providers to avoid conflicts
             builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-            builder.Logging.AddConsole();
+            builder.Logging.AddConsole(options =>
+            {
+                options.FormatterName = ConsoleFormatterNames.Json;
+            });
             builder.Logging.AddDebug();
             builder.Logging.AddEventSourceLogger();
 
@@ -48,19 +55,30 @@ namespace Services.AspNetCore
 
         public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder, string serviceName)
         {
+            builder.Logging.AddOpenTelemetry(logging =>
+            {
+                logging.IncludeFormattedMessage = true;
+                logging.IncludeScopes = true;
+            });
+
             builder.Services
                 .AddOpenTelemetry()
                 .ConfigureResource(resource => resource.AddService(serviceName))
+                .WithMetrics(metrics =>
+                {
+                    metrics
+                        .AddHttpClientInstrumentation()
+                        .AddAspNetCoreInstrumentation();
+                })
                 .WithTracing(tracing =>
                 {
                     tracing
                         .AddSource(serviceName)
-                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
                         .AddHttpClientInstrumentation()
-                        .AddAspNetCoreInstrumentation()
-                        .AddSqlClientInstrumentation(o => o.SetDbStatementForText = true)
-                        .AddOtlpExporter();
+                        .AddAspNetCoreInstrumentation();
                 });
+
+            builder.Services.AddOpenTelemetry().UseOtlpExporter();
 
             return builder;
         }

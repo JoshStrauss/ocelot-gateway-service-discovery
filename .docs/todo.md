@@ -1,6 +1,7 @@
 - [ ] Create benefits vs not having load balancing
-- [ ] Licensing
+- [x] Licensing
 - [ ] Production, VM steps for VM, 
 - [ ] Make service registry configurable on or off
 - [ ] Check persistance on options
-- [ ] Windows Service 
+- [x] Windows Service
+  - https://codepattern.net/Blog/post/how-to-use-consul-in-production-server-for-service-discoveries
