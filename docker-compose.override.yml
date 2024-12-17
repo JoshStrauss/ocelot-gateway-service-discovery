@@ -11,7 +11,7 @@ services:
           - ServiceDiscovery__ConsulUri=http://consul:8500
           - ServiceDiscovery__Address=userservice1.openapi
           - ServiceDiscovery__Port=8080
-          - ServiceDiscovery__HealthCheckEndPoint__Uri="http://userservice1.openapi:8080/health"
+          - ServiceDiscovery__HealthCheckEndPoint__Uri=http://userservice1.openapi:8080/health
         ports:
             - 9100:8080
         depends_on:

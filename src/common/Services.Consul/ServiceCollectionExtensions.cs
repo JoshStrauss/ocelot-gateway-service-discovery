@@ -1,7 +1,6 @@
 ﻿using Consul;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Services.Consul.Options;
 
@@ -21,8 +20,8 @@ namespace Services.Consul
         public static void AddConsul(this IServiceCollection services, ServiceDiscoveryOption serviceDiscoveryOption)
         {
             services.AddSingleton(serviceDiscoveryOption);
-            services.TryAddSingleton<IConsulClient>(s => CreateConsulClient(serviceDiscoveryOption));
-            services.TryAddSingleton<IHostedService, ServiceDiscoveryHostedService>();
+            services.AddSingleton<IConsulClient>(s => CreateConsulClient(serviceDiscoveryOption));
+            services.AddSingleton<IHostedService, ServiceDiscoveryHostedService>();
         }
 
         private static ConsulClient CreateConsulClient(ServiceDiscoveryOption serviceConfig)
